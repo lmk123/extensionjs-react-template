@@ -26,7 +26,7 @@ There is **no test framework** configured — do not invent `test` commands. Cor
 
 The extension runs code in three isolated contexts, each with its own entry point and a tagged `console.log` on load:
 
-- **background** (`src/background.ts`) — service worker on Chromium, background script on Firefox.
+- **background** (`src/background.ts`) — service worker on Chromium, event-page background script on Firefox.
 - **content script** (`src/content/scripts.tsx`) — injected into `<all_urls>`.
 - **sidebar** (`src/sidebar/`) — a regular HTML page (`index.html` → `scripts.tsx` → `SidebarApp.tsx`) shown as the side panel.
 
@@ -37,7 +37,7 @@ The "open sidebar" flow crosses contexts: the content-script button (`ContentApp
 `src/manifest.json` is a **single source that Extension.js splits per browser** using key prefixes:
 
 - `chromium:` / `firefox:` prefixes select keys per target (e.g. `chromium:side_panel` vs `firefox:sidebar_action`, `chromium:service_worker` vs `firefox:scripts`).
-- `manifest_version: 3` for Chromium, `firefox:manifest_version: 2` for Firefox.
+- `manifest_version: 3` for **both** Chromium and Firefox (Firefox 109+ supports MV3). Firefox-only runtime differences (event-page `background.scripts`, `sidebar_action`) are still expressed with `firefox:` prefixes — not a lower manifest version.
 
 Because of this, the same feature often needs **two manifest entries and two runtime code paths**. At runtime, branch on `import.meta.env.EXTENSION_PUBLIC_BROWSER` (values include `firefox`, `gecko-based`) — see `background.ts` and `ContentApp.tsx`. Chromium code uses `chrome.sidePanel`; Firefox uses `browser.sidebarAction`.
 

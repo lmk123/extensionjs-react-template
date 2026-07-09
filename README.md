@@ -13,8 +13,10 @@ The official Extension.js React template is intentionally minimal. This fork kee
 **Baseline (from the official template)**
 
 - React 19 + TypeScript
-- Sidebar panel (`side_panel` on Chromium, `sidebar_action` on Firefox), background worker, and a content script
+- **Manifest V3 on both Chromium and Firefox** — Firefox 109+ supports MV3 and Extension.js now builds it, so there's no MV2 fallback. Extension.js keeps the single manifest working per target: an MV3 background (service worker on Chromium, event-page `background.scripts` on Firefox) and the sidebar panel (`side_panel` on Chromium, `sidebar_action` on Firefox), plus a content script.
 - Cross-browser builds for Chrome / Firefox / Edge
+
+> Publishing to Firefox Add-ons (AMO) may need a stable extension ID — add `browser_specific_settings.gecko.id` to [`src/manifest.json`](src/manifest.json) for that. It isn't needed for local development.
 
 **Added integrations**
 
