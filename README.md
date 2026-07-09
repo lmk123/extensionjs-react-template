@@ -59,7 +59,7 @@ More integrations are planned on top of this baseline:
 Run the extension in development mode. Target a browser with `--browser`:
 
 ```bash
-pnpm run dev
+pnpm run dev           # Chromium (default)
 pnpm run dev -- --browser=firefox
 pnpm run dev -- --browser=edge
 ```

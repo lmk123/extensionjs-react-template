@@ -61,7 +61,7 @@
 以开发模式运行扩展。用 `--browser` 指定目标浏览器：
 
 ```bash
-pnpm run dev
+pnpm run dev           # Chromium（默认）
 pnpm run dev -- --browser=firefox
 pnpm run dev -- --browser=edge
 ```
