@@ -1,7 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/chrome-manifest.json",
   "manifest_version": 3,
-  "firefox:manifest_version": 2,
   "version": "1.0.0",
   "name": "extensionjs-react-template",
   "description": "React-based extension with a sidebar panel. Adds a sidebar with a simple page.",
@@ -12,17 +11,7 @@
     "64": "images/icon.png",
     "128": "images/icon.png"
   },
-  "chromium:action": {
-    "default_icon": {
-      "16": "images/icon.png",
-      "32": "images/icon.png",
-      "48": "images/icon.png",
-      "64": "images/icon.png",
-      "128": "images/icon.png"
-    },
-    "default_title": "Open Side Panel"
-  },
-  "firefox:browser_action": {
+  "action": {
     "default_icon": {
       "16": "images/icon.png",
       "32": "images/icon.png",

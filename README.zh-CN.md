@@ -13,8 +13,10 @@
 **基础部分（来自官方模板）**
 
 - React 19 + TypeScript
-- 侧边栏面板（Chromium 上用 `side_panel`，Firefox 上用 `sidebar_action`）、后台 worker，以及一个 content script
+- **Chromium 与 Firefox 均使用 Manifest V3** —— Firefox 109+ 已支持 MV3，Extension.js 现在也能为其构建，因此不再有 MV2 回退。Extension.js 让同一份 manifest 按目标各自生效：MV3 后台（Chromium 上是 service worker，Firefox 上是 event page 形式的 `background.scripts`）与侧边栏面板（Chromium 用 `side_panel`，Firefox 用 `sidebar_action`），外加一个 content script。
 - 面向 Chrome / Firefox / Edge 的跨浏览器构建
+
+> 发布到 Firefox 附加组件商店（AMO）时可能需要一个稳定的扩展 ID —— 届时在 [`src/manifest.json`](src/manifest.json) 里补上 `browser_specific_settings.gecko.id` 即可；本地开发不需要。
 
 **新增集成**
 
