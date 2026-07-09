@@ -38,6 +38,7 @@
   },
   "scripts": {
     "lint": "eslint .",
+    "type-check": "tsc --noEmit",
     "dev": "extension dev",
     "start": "extension start",
     "build": "extension build",
