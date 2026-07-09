@@ -41,6 +41,7 @@
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "dev": "extension dev",
+    "dev:firefox": "extension dev --browser firefox",
     "start": "extension start",
     "build": "extension build",
     "preview": "extension preview",
