@@ -21,6 +21,7 @@ The official Extension.js React template is intentionally minimal. This fork kee
 - **AI docs access** — the hosted Extension.js docs MCP server, so your editor/assistant answers "how do I…" from current documentation instead of stale training data. See [AI access](https://extension.js.org/docs/ai-access).
 - **Chrome DevTools MCP** — runs Google's `chrome-devtools-mcp` alongside the Extension.js control server (`@extension.dev/mcp`), giving AI agents raw Chrome debugging plus build-aware, cross-browser extension control from one config. See [Chrome DevTools MCP with Extension.js](https://extension.js.org/docs/integrations/chrome-devtools-mcp).
 - **Tailwind CSS** — utility-first styling wired through PostCSS, so you can use utility classes in components out of the box. See [Styling](#styling) and [Tailwind CSS with Extension.js](https://extension.js.org/docs/integrations/tailwindcss).
+- **shadcn/ui** — accessible, copy-into-your-project components built on Tailwind, pre-wired (`components.json`, the `@/` path alias, and a `cn()` helper) so you can drop components into `src/components/ui` and use them right away. See [Styling](#styling) and [shadcn/ui with Extension.js](https://extension.js.org/docs/integrations/shadcnui).
 
 ## MCP servers
 
@@ -38,12 +39,37 @@ A rule of thumb for which to use: if the task touches your **project** (source, 
 
 ## Styling
 
+### Tailwind CSS
+
 [Tailwind CSS](https://tailwindcss.com) v4 is wired through PostCSS:
 
 - [`postcss.config.mjs`](postcss.config.mjs) registers the `@tailwindcss/postcss` plugin.
-- [`src/globals.css`](src/globals.css) pulls Tailwind in with a single `@import "tailwindcss";`.
+- [`src/styles/globals.css`](src/styles/globals.css) pulls in Tailwind and defines the theme.
 
-Import `globals.css` from an entry point, then use utility classes directly in your components. See [Tailwind CSS with Extension.js](https://extension.js.org/docs/integrations/tailwindcss) for details.
+Import `globals.css` from an entry point (the sidebar already does), then use utility classes directly in your components. See [Tailwind CSS with Extension.js](https://extension.js.org/docs/integrations/tailwindcss) for details.
+
+### shadcn/ui
+
+[shadcn/ui](https://ui.shadcn.com) sits on top of Tailwind and lets you pull accessible components straight into your own source tree. The wiring is already in place:
+
+- [`components.json`](components.json) — configuration for the shadcn CLI (style, base color, the `@/` alias, Lucide icons).
+- [`tsconfig.json`](tsconfig.json) maps the `@/*` alias to `src/*`, where generated components import from.
+- [`src/lib/utils.ts`](src/lib/utils.ts) exports the `cn()` helper for merging class names.
+- [`src/styles/globals.css`](src/styles/globals.css) imports `shadcn/tailwind.css` and `tw-animate-css`, and defines the light/dark design tokens (CSS variables).
+
+Add components with the shadcn CLI and they land in `src/components/ui`:
+
+```bash
+pnpm dlx shadcn@latest add button
+```
+
+Then import them through the `@/` alias:
+
+```tsx
+import {Button} from '@/components/ui/button'
+```
+
+See [shadcn/ui with Extension.js](https://extension.js.org/docs/integrations/shadcnui) for details.
 
 ## Roadmap
 

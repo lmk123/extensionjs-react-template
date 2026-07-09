@@ -1,6 +1,6 @@
 import {createRoot} from 'react-dom/client'
 import SidebarApp from './SidebarApp'
-import '../globals.css'
+import '../styles/globals.css'
 import './styles.css'
 
 console.log('[From the sidebar page context] Hello regular page!')

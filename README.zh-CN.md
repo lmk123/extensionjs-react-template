@@ -21,6 +21,7 @@
 - **AI 文档访问** —— 托管的 Extension.js 文档 MCP 服务器，让你的编辑器 / 助手基于最新文档回答「怎么做……」的问题，而不是依赖过时的训练数据。参见 [AI access](https://extension.js.org/docs/ai-access)。
 - **Chrome DevTools MCP** —— 让 Google 的 `chrome-devtools-mcp` 与 Extension.js 控制服务器（`@extension.dev/mcp`）一起运行，在同一份配置里，既给 AI 提供原始的 Chrome 调试能力，也提供构建感知、跨浏览器的扩展控制能力。参见 [Chrome DevTools MCP with Extension.js](https://extension.js.org/docs/integrations/chrome-devtools-mcp)。
 - **Tailwind CSS** —— 通过 PostCSS 接入的原子化（utility-first）CSS，让你开箱即用地在组件里使用工具类。参见下方 [样式](#样式) 以及 [Tailwind CSS with Extension.js](https://extension.js.org/docs/integrations/tailwindcss)。
+- **shadcn/ui** —— 构建在 Tailwind 之上、可复制进项目的可访问组件，已预先配好（`components.json`、`@/` 路径别名和 `cn()` 辅助函数），把组件添加到 `src/components/ui` 后即可立即使用。参见下方 [样式](#样式) 以及 [shadcn/ui with Extension.js](https://extension.js.org/docs/integrations/shadcnui)。
 
 ## MCP 服务器
 
@@ -40,12 +41,37 @@
 
 ## 样式
 
+### Tailwind CSS
+
 通过 PostCSS 接入了 [Tailwind CSS](https://tailwindcss.com) v4：
 
 - [`postcss.config.mjs`](postcss.config.mjs) 注册了 `@tailwindcss/postcss` 插件。
-- [`src/globals.css`](src/globals.css) 用一行 `@import "tailwindcss";` 引入 Tailwind。
+- [`src/styles/globals.css`](src/styles/globals.css) 引入 Tailwind 并定义主题。
 
-在入口文件里引入 `globals.css`，就能在组件里直接使用工具类。详见 [Tailwind CSS with Extension.js](https://extension.js.org/docs/integrations/tailwindcss)。
+在入口文件里引入 `globals.css`（侧边栏已经引入），就能在组件里直接使用工具类。详见 [Tailwind CSS with Extension.js](https://extension.js.org/docs/integrations/tailwindcss)。
+
+### shadcn/ui
+
+[shadcn/ui](https://ui.shadcn.com) 搭在 Tailwind 之上，让你把可访问的组件直接引入到自己的源码目录里。相关配置都已就绪：
+
+- [`components.json`](components.json) —— shadcn CLI 的配置（样式、基础色、`@/` 别名、Lucide 图标）。
+- [`tsconfig.json`](tsconfig.json) 把 `@/*` 别名映射到 `src/*`，生成的组件会从这里导入。
+- [`src/lib/utils.ts`](src/lib/utils.ts) 导出用于合并类名的 `cn()` 辅助函数。
+- [`src/styles/globals.css`](src/styles/globals.css) 引入了 `shadcn/tailwind.css` 和 `tw-animate-css`，并定义了明暗两套主题的设计 token（CSS 变量）。
+
+用 shadcn CLI 添加组件，它们会生成到 `src/components/ui`：
+
+```bash
+pnpm dlx shadcn@latest add button
+```
+
+然后通过 `@/` 别名导入使用：
+
+```tsx
+import {Button} from '@/components/ui/button'
+```
+
+详见 [shadcn/ui with Extension.js](https://extension.js.org/docs/integrations/shadcnui)。
 
 ## 规划
 
