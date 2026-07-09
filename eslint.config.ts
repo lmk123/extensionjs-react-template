@@ -1,4 +1,5 @@
 import globals from "globals";
+import js from "@eslint/js";
 import { ESLint } from "eslint";
 import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
@@ -17,12 +18,18 @@ export default defineConfig([
   {
     files: ["**/*.{js,mjs,cjs,jsx,ts,mts,cts,tsx}"],
     extends: [
+      js.configs.recommended,
       tseslint.configs.recommended,
       pluginReact.configs.flat.recommended,
       pluginReact.configs.flat["jsx-runtime"],
     ],
     languageOptions: { globals: globals.browser },
     settings: { react: { version: "detect" } },
+  },
+  {
+    // Config files run in Node, so expose Node globals like `process`.
+    files: ["**/*.config.{js,mjs,cjs,ts,mts,cts}"],
+    languageOptions: { globals: globals.node },
   },
   { files: ["**/*.json"], plugins: { json: jsonPlugin }, language: "json/json" },
   { files: ["**/*.jsonc"], plugins: { json: jsonPlugin }, language: "json/jsonc" },
