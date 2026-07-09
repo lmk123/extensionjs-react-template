@@ -11,7 +11,7 @@ if (isFirefoxLike) {
     browser.sidebarAction.open()
   })
 
-  browser.runtime.onMessage.addListener((message: any) => {
+  browser.runtime.onMessage.addListener((message) => {
     if (!message || message.type !== 'openSidebar') return
 
     browser.sidebarAction.open()
