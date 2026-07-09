@@ -13,6 +13,9 @@ dist
 # misc
 .DS_Store
 
+# local Claude Code instructions
+CLAUDE.local.md
+
 # local env files
 .env.local
 .env.development.local
