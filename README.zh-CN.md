@@ -13,8 +13,12 @@
 **基础部分（来自官方模板）**
 
 - React 19 + TypeScript
-- **Chromium 与 Firefox 均使用 Manifest V3** —— Firefox 109+ 已支持 MV3，Extension.js 现在也能为其构建，因此不再有 MV2 回退。Extension.js 让同一份 manifest 按目标各自生效：MV3 后台（Chromium 上是 service worker，Firefox 上是 event page 形式的 `background.scripts`）与侧边栏面板（Chromium 用 `side_panel`，Firefox 用 `sidebar_action`），外加一个 content script。
+- **Chromium 上的 Manifest V3** —— MV3 的 service worker 后台、`side_panel` 侧边栏面板，以及注入到所有页面的 content script。
 - 面向 Chrome / Firefox / Edge 的跨浏览器构建
+
+**相对官方模板的改动**
+
+- **Firefox 改用 Manifest V3** —— 官方模板里 Firefox 使用的是 **Manifest V2**，本 fork 将其迁移到了 MV3（Firefox 109+ 支持 MV3，Extension.js 也能为其构建），因此不再有 MV2 回退。同一份 manifest 仍会按目标各自生效：在 Firefox 上，后台变成 event page 形式的 `background.scripts`，侧边栏变成 `sidebar_action`。
 
 > 发布到 Firefox 附加组件商店（AMO）时可能需要一个稳定的扩展 ID —— 届时在 [`src/manifest.json`](src/manifest.json) 里补上 `browser_specific_settings.gecko.id` 即可；本地开发不需要。
 
@@ -29,8 +33,6 @@
 ## MCP 服务器
 
 上述集成都声明在 [`.mcp.json`](.mcp.json) 中，Claude Code（以及指向同一份配置的其他 MCP 兼容客户端）会自动识别加载。
-
-> 小科普：MCP（Model Context Protocol）可以理解为「给 AI 助手用的插件协议」。每个 MCP 服务器就像一个提供了一组工具的插件，AI 助手连上后就能调用这些工具去查文档、控制浏览器、读写扩展状态等。
 
 | 服务器            | 传输方式                       | 给助手提供的能力                                                                                     |
 | ----------------- | ------------------------------ | --------------------------------------------------------------------------------------------------- |
