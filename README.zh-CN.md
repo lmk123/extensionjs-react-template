@@ -20,6 +20,7 @@
 
 - **AI 文档访问** —— 托管的 Extension.js 文档 MCP 服务器，让你的编辑器 / 助手基于最新文档回答「怎么做……」的问题，而不是依赖过时的训练数据。参见 [AI access](https://extension.js.org/docs/ai-access)。
 - **Chrome DevTools MCP** —— 让 Google 的 `chrome-devtools-mcp` 与 Extension.js 控制服务器（`@extension.dev/mcp`）一起运行，在同一份配置里，既给 AI 提供原始的 Chrome 调试能力，也提供构建感知、跨浏览器的扩展控制能力。参见 [Chrome DevTools MCP with Extension.js](https://extension.js.org/docs/integrations/chrome-devtools-mcp)。
+- **Tailwind CSS** —— 通过 PostCSS 接入的原子化（utility-first）CSS，让你开箱即用地在组件里使用工具类。参见下方 [样式](#样式) 以及 [Tailwind CSS with Extension.js](https://extension.js.org/docs/integrations/tailwindcss)。
 
 ## MCP 服务器
 
@@ -37,11 +38,19 @@
 
 选择哪一个的经验法则：如果任务和你的**项目**相关（源码、构建、manifest、重载），用 `extension-dev`；如果任务是操作**浏览器**本身这类通用行为（页面、网络、性能），用 `chrome-devtools`。
 
+## 样式
+
+通过 PostCSS 接入了 [Tailwind CSS](https://tailwindcss.com) v4：
+
+- [`postcss.config.mjs`](postcss.config.mjs) 注册了 `@tailwindcss/postcss` 插件。
+- [`src/globals.css`](src/globals.css) 用一行 `@import "tailwindcss";` 引入 Tailwind。
+
+在入口文件里引入 `globals.css`，就能在组件里直接使用工具类。详见 [Tailwind CSS with Extension.js](https://extension.js.org/docs/integrations/tailwindcss)。
+
 ## 规划
 
 在这个基础之上还计划集成更多能力：
 
-- [ ] Tailwind CSS
 - [ ] ESLint
 - [ ] ……更多
 

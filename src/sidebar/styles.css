@@ -52,8 +52,10 @@ body {
   text-align: center;
 }
 
+/* Link color is handled by Tailwind utility classes in SidebarApp.tsx.
+   Keep only underline/margin here so the utilities aren't overridden by
+   this unlayered rule (unlayered CSS always beats @layer utilities). */
 .sidebar_description a {
   text-decoration: underline;
-  color: var(--sidebar-link);
   margin: 0;
 }

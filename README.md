@@ -20,6 +20,7 @@ The official Extension.js React template is intentionally minimal. This fork kee
 
 - **AI docs access** — the hosted Extension.js docs MCP server, so your editor/assistant answers "how do I…" from current documentation instead of stale training data. See [AI access](https://extension.js.org/docs/ai-access).
 - **Chrome DevTools MCP** — runs Google's `chrome-devtools-mcp` alongside the Extension.js control server (`@extension.dev/mcp`), giving AI agents raw Chrome debugging plus build-aware, cross-browser extension control from one config. See [Chrome DevTools MCP with Extension.js](https://extension.js.org/docs/integrations/chrome-devtools-mcp).
+- **Tailwind CSS** — utility-first styling wired through PostCSS, so you can use utility classes in components out of the box. See [Styling](#styling) and [Tailwind CSS with Extension.js](https://extension.js.org/docs/integrations/tailwindcss).
 
 ## MCP servers
 
@@ -35,11 +36,19 @@ The integrations above are declared in [`.mcp.json`](.mcp.json) and picked up au
 
 A rule of thumb for which to use: if the task touches your **project** (source, build, manifest, reload), reach for `extension-dev`; if it touches the **browser** generically (pages, network, performance), reach for `chrome-devtools`.
 
+## Styling
+
+[Tailwind CSS](https://tailwindcss.com) v4 is wired through PostCSS:
+
+- [`postcss.config.mjs`](postcss.config.mjs) registers the `@tailwindcss/postcss` plugin.
+- [`src/globals.css`](src/globals.css) pulls Tailwind in with a single `@import "tailwindcss";`.
+
+Import `globals.css` from an entry point, then use utility classes directly in your components. See [Tailwind CSS with Extension.js](https://extension.js.org/docs/integrations/tailwindcss) for details.
+
 ## Roadmap
 
 More integrations are planned on top of this baseline:
 
-- [ ] Tailwind CSS
 - [ ] ESLint
 - [ ] …more to come
 
