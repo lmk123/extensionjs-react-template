@@ -22,6 +22,7 @@
 - **Chrome DevTools MCP** —— 让 Google 的 `chrome-devtools-mcp` 与 Extension.js 控制服务器（`@extension.dev/mcp`）一起运行，在同一份配置里，既给 AI 提供原始的 Chrome 调试能力，也提供构建感知、跨浏览器的扩展控制能力。参见 [Chrome DevTools MCP with Extension.js](https://extension.js.org/docs/integrations/chrome-devtools-mcp)。
 - **Tailwind CSS** —— 通过 PostCSS 接入的原子化（utility-first）CSS，让你开箱即用地在组件里使用工具类。参见下方 [样式](#样式) 以及 [Tailwind CSS with Extension.js](https://extension.js.org/docs/integrations/tailwindcss)。
 - **shadcn/ui** —— 构建在 Tailwind 之上、可复制进项目的可访问组件，已预先配好（`components.json`、`@/` 路径别名和 `cn()` 辅助函数），把组件添加到 `src/components/ui` 后即可立即使用。参见下方 [样式](#样式) 以及 [shadcn/ui with Extension.js](https://extension.js.org/docs/integrations/shadcnui)。
+- **ESLint** —— 基于 flat config（[`eslint.config.ts`](eslint.config.ts)）的 lint 配置，覆盖 JS/TS、React、JSON、Markdown 和 CSS，通过 `pnpm run lint` 在构建管线之外运行；另配有 `pnpm run type-check` 调用 `tsc` 做类型检查。参见下方 [命令](#命令) 以及 [ESLint with Extension.js](https://extension.js.org/docs/integrations/eslint)。
 
 ## MCP 服务器
 
@@ -73,13 +74,6 @@ import {Button} from '@/components/ui/button'
 
 详见 [shadcn/ui with Extension.js](https://extension.js.org/docs/integrations/shadcnui)。
 
-## 规划
-
-在这个基础之上还计划集成更多能力：
-
-- [ ] ESLint
-- [ ] ……更多
-
 ## 命令
 
 ### dev
@@ -108,6 +102,15 @@ pnpm run build:edge
 
 ```bash
 pnpm run preview
+```
+
+### lint
+
+用 ESLint 检查代码质量，并用 `tsc` 单独做类型检查：
+
+```bash
+pnpm run lint
+pnpm run type-check
 ```
 
 ## 了解更多

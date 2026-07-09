@@ -22,6 +22,7 @@ The official Extension.js React template is intentionally minimal. This fork kee
 - **Chrome DevTools MCP** — runs Google's `chrome-devtools-mcp` alongside the Extension.js control server (`@extension.dev/mcp`), giving AI agents raw Chrome debugging plus build-aware, cross-browser extension control from one config. See [Chrome DevTools MCP with Extension.js](https://extension.js.org/docs/integrations/chrome-devtools-mcp).
 - **Tailwind CSS** — utility-first styling wired through PostCSS, so you can use utility classes in components out of the box. See [Styling](#styling) and [Tailwind CSS with Extension.js](https://extension.js.org/docs/integrations/tailwindcss).
 - **shadcn/ui** — accessible, copy-into-your-project components built on Tailwind, pre-wired (`components.json`, the `@/` path alias, and a `cn()` helper) so you can drop components into `src/components/ui` and use them right away. See [Styling](#styling) and [shadcn/ui with Extension.js](https://extension.js.org/docs/integrations/shadcnui).
+- **ESLint** — a flat-config ([`eslint.config.ts`](eslint.config.ts)) lint setup covering JS/TS, React, JSON, Markdown, and CSS. It runs outside the build pipeline via `pnpm run lint`, with a companion `pnpm run type-check` for `tsc`. See [Commands](#commands) and [ESLint with Extension.js](https://extension.js.org/docs/integrations/eslint).
 
 ## MCP servers
 
@@ -71,13 +72,6 @@ import {Button} from '@/components/ui/button'
 
 See [shadcn/ui with Extension.js](https://extension.js.org/docs/integrations/shadcnui) for details.
 
-## Roadmap
-
-More integrations are planned on top of this baseline:
-
-- [ ] ESLint
-- [ ] …more to come
-
 ## Commands
 
 ### dev
@@ -106,6 +100,15 @@ Preview the production build in the browser:
 
 ```bash
 pnpm run preview
+```
+
+### lint
+
+Check code quality with ESLint, and type-check separately with `tsc`:
+
+```bash
+pnpm run lint
+pnpm run type-check
 ```
 
 ## Learn more
