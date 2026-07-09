@@ -1,10 +1,16 @@
 import globals from "globals";
+import { ESLint } from "eslint";
 import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
 import json from "@eslint/json";
 import markdown from "@eslint/markdown";
 import css from "@eslint/css";
 import { defineConfig } from "eslint/config";
+
+// @eslint/json's rules are typed against its own JSONSourceCode, which is not
+// structurally assignable to ESLint's core Plugin type. Casting keeps the
+// documented `plugins: { json }` usage while satisfying the type checker.
+const jsonPlugin = json as unknown as ESLint.Plugin;
 
 export default defineConfig([
   { ignores: ["dist/**"] },
@@ -18,9 +24,9 @@ export default defineConfig([
     languageOptions: { globals: globals.browser },
     settings: { react: { version: "detect" } },
   },
-  { files: ["**/*.json"], plugins: { json }, language: "json/json" },
-  { files: ["**/*.jsonc"], plugins: { json }, language: "json/jsonc" },
-  { files: ["**/*.json5"], plugins: { json }, language: "json/json5" },
+  { files: ["**/*.json"], plugins: { json: jsonPlugin }, language: "json/json" },
+  { files: ["**/*.jsonc"], plugins: { json: jsonPlugin }, language: "json/jsonc" },
+  { files: ["**/*.json5"], plugins: { json: jsonPlugin }, language: "json/json5" },
   { files: ["**/*.md"], plugins: { markdown }, language: "markdown/gfm" },
   {
     files: ["**/*.css"],
