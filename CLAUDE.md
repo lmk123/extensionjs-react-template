@@ -8,7 +8,7 @@ An opinionated React browser-extension starter built on **Extension.js** (the `e
 
 ## Commands
 
-Package manager is **pnpm** (`pnpm@11.10.0`). To pass CLI flags through a `pnpm run` script you must use `--`, e.g. `pnpm run dev -- --browser=firefox`.
+Package manager is **pnpm** (`pnpm@11.24.0`). To pass CLI flags through a `pnpm run` script you must use `--`, e.g. `pnpm run dev -- --browser=firefox`.
 
 ```bash
 pnpm run dev            # dev server + HMR, Chromium by default (--browser=firefox|edge)
@@ -19,6 +19,15 @@ pnpm run type-check     # tsc --noEmit (type errors are NOT surfaced by the buil
 ```
 
 There is **no test framework** configured — do not invent `test` commands. Correctness is guarded by `lint` + `type-check` only. Run both after non-trivial changes; the Extension.js build does not fail on type errors.
+
+### TypeScript 6 and 7 are both installed (on purpose)
+
+`typescript-eslint` throws on the TS 7 API, so `package.json` follows the [official side-by-side setup](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-6.0):
+
+- `"typescript": "npm:@typescript/typescript6"` — what `require('typescript')` resolves to, i.e. what ESLint and the editor's tsserver use. Also gives a `tsc6` binary.
+- `"typescript-7": "npm:typescript"` — the real TS 7 compiler; this is the `tsc` that `pnpm run type-check` runs.
+
+So `type-check` runs TS 7 while ESLint and the IDE run TS 6. Collapse this back to a single plain `typescript` dependency once [typescript-eslint#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940) ships.
 
 ## Architecture
 
