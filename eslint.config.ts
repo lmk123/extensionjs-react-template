@@ -1,4 +1,5 @@
 import globals from "globals";
+import { version as reactVersion } from "react";
 import js from "@eslint/js";
 import { ESLint } from "eslint";
 import tseslint from "typescript-eslint";
@@ -26,7 +27,10 @@ export default defineConfig([
       reactHooks.configs.flat["recommended-latest"],
     ],
     languageOptions: { globals: globals.browser },
-    settings: { react: { version: "detect" } },
+    // Must be an explicit version, not "detect": eslint-plugin-react's detection
+    // path calls `context.getFilename()`, removed in ESLint 10, and throws.
+    // Reading it off the installed React keeps it in sync with package.json.
+    settings: { react: { version: reactVersion } },
   },
   {
     // Config files run in Node, so expose Node globals like `process`.
