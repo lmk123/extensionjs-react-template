@@ -26,6 +26,14 @@
   background: #11151c;
 }
 
+.content_pill_static {
+  cursor: default;
+}
+
+.content_pill_static:hover {
+  background: var(--sidebar-bg, #0a0c10);
+}
+
 .content_pill_logo {
   height: 1.5rem;
   border-radius: 9999px;

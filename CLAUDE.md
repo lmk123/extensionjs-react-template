@@ -8,7 +8,7 @@ An opinionated React browser-extension starter built on **Extension.js** (the `e
 
 ## Commands
 
-Package manager is **pnpm** (`pnpm@11.24.0`). To pass CLI flags through a `pnpm run` script you must use `--`, e.g. `pnpm run dev -- --browser=firefox`.
+Package manager is **pnpm** (`pnpm@12.18.0`). Append CLI flags directly after the script name, e.g. `pnpm run dev --browser=firefox`. Do **not** insert `--`: pnpm forwards it literally (verified on pnpm 10, 11 and 12), so Extension.js reads `--browser=firefox` as the project path and fails with "Manifest file not found".
 
 ```bash
 pnpm run dev            # dev server + HMR, Chromium by default (--browser=firefox|edge)
@@ -39,7 +39,7 @@ The extension runs code in three isolated contexts, each with its own entry poin
 - **content script** (`src/content/scripts.tsx`) — injected into `<all_urls>`.
 - **sidebar** (`src/sidebar/`) — a regular HTML page (`index.html` → `scripts.tsx` → `SidebarApp.tsx`) shown as the side panel.
 
-The "open sidebar" flow crosses contexts: the content-script button (`ContentApp.tsx`) sends `runtime.sendMessage({type: 'openSidebar'})`; the background listener receives it and opens the panel. Keep the message `type` in sync across `ContentApp.tsx` and `background.ts` if you change it.
+The "open sidebar" flow crosses contexts: the content-script button (`ContentApp.tsx`) sends `chrome.runtime.sendMessage({type: 'openSidebar'})`; the background listener receives it and opens the panel. The open call is gated on a user gesture: on Chromium, call `chrome.sidePanel.open()` synchronously in the listener (no `await` or async callback first). Firefox never counts a content-script message as a user action, so this flow is Chromium-only: on every non-Chromium target `ContentApp.tsx` renders a static hint instead of the button, the Firefox background has no `onMessage` listener, and only the toolbar button (`sidebarAction.toggle()`) opens the sidebar. Keep the message `type` in sync across `ContentApp.tsx` and `background.ts` if you change it.
 
 ### Cross-browser manifest (the key non-obvious piece)
 
@@ -48,7 +48,7 @@ The "open sidebar" flow crosses contexts: the content-script button (`ContentApp
 - `chromium:` / `firefox:` prefixes select keys per target (e.g. `chromium:side_panel` vs `firefox:sidebar_action`, `chromium:service_worker` vs `firefox:scripts`).
 - `manifest_version: 3` for **both** Chromium and Firefox (Firefox 109+ supports MV3). Firefox-only runtime differences (event-page `background.scripts`, `sidebar_action`) are still expressed with `firefox:` prefixes — not a lower manifest version.
 
-Because of this, the same feature often needs **two manifest entries and two runtime code paths**. At runtime, branch on `import.meta.env.EXTENSION_PUBLIC_BROWSER` (values include `firefox`, `gecko-based`) — see `background.ts` and `ContentApp.tsx`. Chromium code uses `chrome.sidePanel`; Firefox uses `browser.sidebarAction`.
+Because of this, the same feature often needs **two manifest entries and two runtime code paths**. At runtime, branch on `isFirefoxLike` / `isChromiumLike` from `src/lib/browser.ts` (they cover every Gecko and every Chromium `EXTENSION_PUBLIC_BROWSER` target respectively; keep each a chain of literal comparisons so the bundler folds it and drops the other browser's branch) — see `background.ts` and `ContentApp.tsx`. Don't use `!isFirefoxLike` to mean Chromium: Extension.js also builds WebKit targets (`safari`, `webkit-based`), which are neither and have no side-panel API. Chromium code uses `chrome.sidePanel`; Firefox code calls `firefoxBrowser()` from the same module (e.g. `firefoxBrowser().sidebarAction`). Don't use the bare `browser` global for Firefox-only APIs: `@types/chrome` (>= 0.3) re-types it as `typeof chrome`, and `firefoxBrowser()` is the one place that casts it back to the webextension-polyfill type.
 
 Manifest entry points reference **TypeScript files directly** (`background.ts`, `content/scripts.tsx`) — Extension.js transpiles them.
 

@@ -86,8 +86,8 @@ Run the extension in development mode. Target a browser with `--browser`:
 
 ```bash
 pnpm run dev           # Chromium (default)
-pnpm run dev -- --browser=firefox
-pnpm run dev -- --browser=edge
+pnpm run dev --browser=firefox
+pnpm run dev --browser=edge
 ```
 
 ### build

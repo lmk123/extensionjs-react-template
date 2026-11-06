@@ -1,44 +1,48 @@
+import {firefoxBrowser, isChromiumLike, isFirefoxLike} from './lib/browser'
+
 console.log(
   '[From the background context] Hello from the background worker/script!'
 )
 
-const isFirefoxLike =
-  import.meta.env.EXTENSION_PUBLIC_BROWSER === 'firefox' ||
-  import.meta.env.EXTENSION_PUBLIC_BROWSER === 'gecko-based'
+function isOpenSidebarMessage(message: unknown) {
+  return (message as {type?: string} | null | undefined)?.type === 'openSidebar'
+}
 
 if (isFirefoxLike) {
-  browser.action.onClicked.addListener(() => {
-    browser.sidebarAction.open()
-  })
+  const firefox = firefoxBrowser()
 
-  browser.runtime.onMessage.addListener((message: unknown) => {
-    if (!message || (message as {type?: string}).type !== 'openSidebar') return
-
-    browser.sidebarAction.open()
+  // Clicking the toolbar icon is a user action, so the sidebar may be opened
+  // here. toggle() (not open()) so a second click closes it, as on Chromium.
+  //
+  // There is no runtime.onMessage listener on Firefox: it never counts a
+  // message relayed from a content-script click as a user action (see MDN
+  // "User actions"), so ContentApp shows a hint instead of a button there.
+  firefox.action.onClicked.addListener(() => {
+    firefox.sidebarAction.toggle().catch(console.error)
   })
 }
 
-if (!isFirefoxLike) {
-  chrome.action.onClicked.addListener(() => {
-    chrome.sidePanel.setPanelBehavior({openPanelOnActionClick: true})
-  })
+if (isChromiumLike) {
+  // chrome.sidePanel exists from Chrome 114 and sidePanel.open() from 116, so
+  // check both instead of letting a missing API throw at service-worker start
+  // (which would also stop the listener below from being registered).
+  const sidePanel = chrome.sidePanel as typeof chrome.sidePanel | undefined
 
-  chrome.runtime.onMessage.addListener((message) => {
-    if (!message || message.type !== 'openSidebar') return
+  // Let the toolbar icon open the side panel. Set on every service-worker start
+  // (it is an idempotent upsert) so the very first click already works.
+  sidePanel
+    ?.setPanelBehavior({openPanelOnActionClick: true})
+    .catch(console.error)
 
-    chrome.sidePanel.setPanelBehavior({openPanelOnActionClick: true})
+  chrome.runtime.onMessage.addListener((message, sender) => {
+    if (!isOpenSidebarMessage(message)) return
 
-    if (!chrome.sidePanel.open) return
+    // sidePanel.open() needs the user gesture that came with this message, so
+    // call it synchronously (no await / async callback first), on the tab that
+    // sent the message.
+    const tabId = sender.tab?.id
+    if (tabId === undefined || !sidePanel?.open) return
 
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-      const activeTabId = tabs && tabs[0] && tabs[0].id
-      if (!activeTabId) return
-
-      try {
-        chrome.sidePanel.open({tabId: activeTabId})
-      } catch (error) {
-        console.error(error)
-      }
-    })
+    sidePanel.open({tabId}).catch(console.error)
   })
 }
