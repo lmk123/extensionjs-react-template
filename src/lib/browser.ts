@@ -1,13 +1,24 @@
 import type Browser from 'webextension-polyfill'
 
+const target = import.meta.env.EXTENSION_PUBLIC_BROWSER
+
 /**
- * True when building for Firefox or another Gecko-based browser. Use this
- * (not a direct `EXTENSION_PUBLIC_BROWSER` comparison) so every extension
- * context agrees on which runtime code path to take.
+ * True when building for Firefox or any other Gecko-based target that
+ * Extension.js accepts for `--browser` (these all get the `firefox:` manifest
+ * keys). Use this (not a direct `EXTENSION_PUBLIC_BROWSER` comparison) so every
+ * extension context agrees on which runtime code path to take.
+ *
+ * Keep it a chain of literal comparisons: the bundler folds it to a constant,
+ * so the other browser's branch is dropped from each build.
  */
 export const isFirefoxLike =
-  import.meta.env.EXTENSION_PUBLIC_BROWSER === 'firefox' ||
-  import.meta.env.EXTENSION_PUBLIC_BROWSER === 'gecko-based'
+  target === 'firefox' ||
+  target === 'firefox-based' ||
+  target === 'gecko-based' ||
+  target === 'waterfox' ||
+  target === 'librewolf' ||
+  target === 'zen' ||
+  target === 'floorp'
 
 /**
  * The global `browser`, typed as the WebExtension (Firefox) API.

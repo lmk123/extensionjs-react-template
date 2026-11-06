@@ -39,7 +39,7 @@ The extension runs code in three isolated contexts, each with its own entry poin
 - **content script** (`src/content/scripts.tsx`) — injected into `<all_urls>`.
 - **sidebar** (`src/sidebar/`) — a regular HTML page (`index.html` → `scripts.tsx` → `SidebarApp.tsx`) shown as the side panel.
 
-The "open sidebar" flow crosses contexts: the content-script button (`ContentApp.tsx`) sends `runtime.sendMessage({type: 'openSidebar'})`; the background listener receives it and opens the panel. Keep the message `type` in sync across `ContentApp.tsx` and `background.ts` if you change it.
+The "open sidebar" flow crosses contexts: the content-script button (`ContentApp.tsx`) sends `runtime.sendMessage({type: 'openSidebar'})`; the background listener receives it and opens the panel. The open call is gated on a user gesture: on Chromium, call `chrome.sidePanel.open()` synchronously in the listener (no `await` or async callback first). Firefox never counts a content-script message as a user action, so there the button can't open the sidebar (the background logs a warning) and only the toolbar button works. Keep the message `type` in sync across `ContentApp.tsx` and `background.ts` if you change it.
 
 ### Cross-browser manifest (the key non-obvious piece)
 
@@ -48,7 +48,7 @@ The "open sidebar" flow crosses contexts: the content-script button (`ContentApp
 - `chromium:` / `firefox:` prefixes select keys per target (e.g. `chromium:side_panel` vs `firefox:sidebar_action`, `chromium:service_worker` vs `firefox:scripts`).
 - `manifest_version: 3` for **both** Chromium and Firefox (Firefox 109+ supports MV3). Firefox-only runtime differences (event-page `background.scripts`, `sidebar_action`) are still expressed with `firefox:` prefixes — not a lower manifest version.
 
-Because of this, the same feature often needs **two manifest entries and two runtime code paths**. At runtime, branch on `isFirefoxLike` from `src/lib/browser.ts` (covers `EXTENSION_PUBLIC_BROWSER` values `firefox` and `gecko-based`) — see `background.ts` and `ContentApp.tsx`. Chromium code uses `chrome.sidePanel`; Firefox code calls `firefoxBrowser()` from the same module (e.g. `firefoxBrowser().sidebarAction`). Don't use the bare `browser` global for Firefox-only APIs: `@types/chrome` (>= 0.3) re-types it as `typeof chrome`, and `firefoxBrowser()` is the one place that casts it back to the webextension-polyfill type.
+Because of this, the same feature often needs **two manifest entries and two runtime code paths**. At runtime, branch on `isFirefoxLike` from `src/lib/browser.ts` (covers every Gecko `EXTENSION_PUBLIC_BROWSER` target: `firefox`, `firefox-based`, `gecko-based`, `waterfox`, `librewolf`, `zen`, `floorp`; keep it a chain of literal comparisons so the bundler folds it and drops the other browser's branch) — see `background.ts` and `ContentApp.tsx`. Chromium code uses `chrome.sidePanel`; Firefox code calls `firefoxBrowser()` from the same module (e.g. `firefoxBrowser().sidebarAction`). Don't use the bare `browser` global for Firefox-only APIs: `@types/chrome` (>= 0.3) re-types it as `typeof chrome`, and `firefoxBrowser()` is the one place that casts it back to the webextension-polyfill type.
 
 Manifest entry points reference **TypeScript files directly** (`background.ts`, `content/scripts.tsx`) — Extension.js transpiles them.
 
