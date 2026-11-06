@@ -8,7 +8,7 @@ An opinionated React browser-extension starter built on **Extension.js** (the `e
 
 ## Commands
 
-Package manager is **pnpm** (`pnpm@11.24.0`). To pass CLI flags through a `pnpm run` script you must use `--`, e.g. `pnpm run dev -- --browser=firefox`.
+Package manager is **pnpm** (`pnpm@12.18.0`). Append CLI flags directly after the script name, e.g. `pnpm run dev --browser=firefox`. Do **not** insert `--`: pnpm (11+) forwards it literally, so Extension.js reads `--browser=firefox` as the project path and fails with "Manifest file not found".
 
 ```bash
 pnpm run dev            # dev server + HMR, Chromium by default (--browser=firefox|edge)
