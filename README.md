@@ -27,7 +27,7 @@ The official Extension.js React template is intentionally minimal. This fork kee
 - **AI docs access** — the hosted Extension.js docs MCP server, so your editor/assistant answers "how do I…" from current documentation instead of stale training data. See [AI access](https://extension.js.org/docs/ai-access).
 - **Chrome DevTools MCP** — runs Google's `chrome-devtools-mcp` alongside the Extension.js control server (`@extension.dev/mcp`), giving AI agents raw Chrome debugging plus build-aware, cross-browser extension control from one config. See [Chrome DevTools MCP with Extension.js](https://extension.js.org/docs/integrations/chrome-devtools-mcp).
 - **Tailwind CSS** — utility-first styling wired through PostCSS, so you can use utility classes in components out of the box. See [Styling](#styling) and [Tailwind CSS with Extension.js](https://extension.js.org/docs/integrations/tailwindcss).
-- **shadcn/ui** — accessible, copy-into-your-project components built on Tailwind, pre-wired (`components.json`, the `@/` path alias, and a `cn()` helper) so you can drop components into `src/components/ui` and use them right away. See [Styling](#styling) and [shadcn/ui with Extension.js](https://extension.js.org/docs/integrations/shadcnui).
+- **shadcn/ui** — accessible, copy-into-your-project components built on Tailwind, pre-wired (`components.json`, the `@/` path alias, and the official [`cn`](https://github.com/shadcn-ui/cn) class-name package) so you can drop components into `src/components/ui` and use them right away. See [Styling](#styling) and [shadcn/ui with Extension.js](https://extension.js.org/docs/integrations/shadcnui).
 - **ESLint** — a flat-config ([`eslint.config.ts`](eslint.config.ts)) lint setup covering JS/TS, React, JSON, Markdown, and CSS. It runs outside the build pipeline via `pnpm run lint`, with a companion `pnpm run type-check` for `tsc`. See [Commands](#commands) and [ESLint with Extension.js](https://extension.js.org/docs/integrations/eslint).
 
 ## MCP servers
@@ -61,7 +61,7 @@ Import `globals.css` from an entry point (the sidebar already does), then use ut
 
 - [`components.json`](components.json) — configuration for the shadcn CLI (style, base color, the `@/` alias, Lucide icons).
 - [`tsconfig.json`](tsconfig.json) maps the `@/*` alias to `src/*`, where generated components import from.
-- [`src/lib/utils.ts`](src/lib/utils.ts) exports the `cn()` helper for merging class names.
+- Merge class names with `cn()` from the [`cn`](https://github.com/shadcn-ui/cn) package (`import { cn } from "cn"`), which is what shadcn components import. [`src/lib/utils.ts`](src/lib/utils.ts) only re-exports it, so older code that imports `cn` from `@/lib/utils` keeps working.
 - [`src/styles/globals.css`](src/styles/globals.css) imports `shadcn/tailwind.css` and `tw-animate-css`, and defines the light/dark design tokens (CSS variables).
 
 Add components with the shadcn CLI and they land in `src/components/ui`:

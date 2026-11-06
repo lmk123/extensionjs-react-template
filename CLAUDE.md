@@ -59,7 +59,7 @@ Manifest entry points reference **TypeScript files directly** (`background.ts`, 
 ### Styling: Tailwind v4 + shadcn/ui
 
 - Tailwind v4 runs through PostCSS (`postcss.config.mjs`). Theme + design tokens live in `src/styles/globals.css` (imports `tailwindcss`, `tw-animate-css`, and `shadcn/tailwind.css`). An entry point must import `globals.css` for utilities to apply (the sidebar does).
-- shadcn/ui is pre-wired (`components.json`). Add components with `pnpm dlx shadcn@latest add <name>`; they land in `src/components/ui` and import via the `@/` alias. Merge class names with `cn()` from `src/lib/utils.ts`.
+- shadcn/ui is pre-wired (`components.json`). Add components with `pnpm dlx shadcn@latest add <name>`; they land in `src/components/ui` and import via the `@/` alias. Merge class names with `cn()` from the official [`cn`](https://github.com/shadcn-ui/cn) package (`import { cn } from "cn"`) — that is what shadcn components import. `src/lib/utils.ts` is only a one-line re-export (`export { cn } from "cn"`) so `@/lib/utils` imports keep working; don't reintroduce `clsx`/`tailwind-merge`.
 
 ### Path alias & ambient types
 

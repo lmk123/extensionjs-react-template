@@ -27,7 +27,7 @@
 - **AI 文档访问** —— 托管的 Extension.js 文档 MCP 服务器，让你的编辑器 / 助手基于最新文档回答「怎么做……」的问题，而不是依赖过时的训练数据。参见 [AI access](https://extension.js.org/docs/ai-access)。
 - **Chrome DevTools MCP** —— 让 Google 的 `chrome-devtools-mcp` 与 Extension.js 控制服务器（`@extension.dev/mcp`）一起运行，在同一份配置里，既给 AI 提供原始的 Chrome 调试能力，也提供构建感知、跨浏览器的扩展控制能力。参见 [Chrome DevTools MCP with Extension.js](https://extension.js.org/docs/integrations/chrome-devtools-mcp)。
 - **Tailwind CSS** —— 通过 PostCSS 接入的原子化（utility-first）CSS，让你开箱即用地在组件里使用工具类。参见下方 [样式](#样式) 以及 [Tailwind CSS with Extension.js](https://extension.js.org/docs/integrations/tailwindcss)。
-- **shadcn/ui** —— 构建在 Tailwind 之上、可复制进项目的可访问组件，已预先配好（`components.json`、`@/` 路径别名和 `cn()` 辅助函数），把组件添加到 `src/components/ui` 后即可立即使用。参见下方 [样式](#样式) 以及 [shadcn/ui with Extension.js](https://extension.js.org/docs/integrations/shadcnui)。
+- **shadcn/ui** —— 构建在 Tailwind 之上、可复制进项目的可访问组件，已预先配好（`components.json`、`@/` 路径别名和官方的 [`cn`](https://github.com/shadcn-ui/cn) 类名合并包），把组件添加到 `src/components/ui` 后即可立即使用。参见下方 [样式](#样式) 以及 [shadcn/ui with Extension.js](https://extension.js.org/docs/integrations/shadcnui)。
 - **ESLint** —— 基于 flat config（[`eslint.config.ts`](eslint.config.ts)）的 lint 配置，覆盖 JS/TS、React、JSON、Markdown 和 CSS，通过 `pnpm run lint` 在构建管线之外运行；另配有 `pnpm run type-check` 调用 `tsc` 做类型检查。参见下方 [命令](#命令) 以及 [ESLint with Extension.js](https://extension.js.org/docs/integrations/eslint)。
 
 ## MCP 服务器
@@ -61,7 +61,7 @@
 
 - [`components.json`](components.json) —— shadcn CLI 的配置（样式、基础色、`@/` 别名、Lucide 图标）。
 - [`tsconfig.json`](tsconfig.json) 把 `@/*` 别名映射到 `src/*`，生成的组件会从这里导入。
-- [`src/lib/utils.ts`](src/lib/utils.ts) 导出用于合并类名的 `cn()` 辅助函数。
+- 合并类名使用 [`cn`](https://github.com/shadcn-ui/cn) 包提供的 `cn()`（`import { cn } from "cn"`），shadcn 组件默认就是这样导入的。[`src/lib/utils.ts`](src/lib/utils.ts) 只是对它的 re-export，让从 `@/lib/utils` 导入 `cn` 的旧代码继续可用。
 - [`src/styles/globals.css`](src/styles/globals.css) 引入了 `shadcn/tailwind.css` 和 `tw-animate-css`，并定义了明暗两套主题的设计 token（CSS 变量）。
 
 用 shadcn CLI 添加组件，它们会生成到 `src/components/ui`：
