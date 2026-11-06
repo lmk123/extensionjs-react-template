@@ -21,6 +21,26 @@ export const isFirefoxLike =
   target === 'floorp'
 
 /**
+ * True when building for Chrome or any other Chromium-based target that
+ * Extension.js accepts for `--browser` (these all get the `chromium:` manifest
+ * keys, so `chrome.sidePanel` is the sidebar API). This is not simply
+ * `!isFirefoxLike`: WebKit targets (`safari`, `webkit-based`) are neither, and
+ * have no side-panel API at all.
+ *
+ * Same rule as `isFirefoxLike`: keep it a chain of literal comparisons.
+ */
+export const isChromiumLike =
+  target === 'chrome' ||
+  target === 'chromium' ||
+  target === 'chromium-based' ||
+  target === 'chromium-emulator' ||
+  target === 'edge' ||
+  target === 'brave' ||
+  target === 'opera' ||
+  target === 'vivaldi' ||
+  target === 'yandex'
+
+/**
  * The global `browser`, typed as the WebExtension (Firefox) API.
  *
  * @types/chrome (>= 0.3) declares `var browser: typeof chrome`, which collides
