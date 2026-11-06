@@ -1,9 +1,10 @@
 import logo from '../images/icon.png'
+import {firefoxBrowser, isFirefoxLike} from '../lib/browser'
 
 export default function ContentApp() {
   const handleClick = () => {
-    if (import.meta.env.EXTENSION_PUBLIC_BROWSER === 'firefox') {
-      browser.runtime.sendMessage({type: 'openSidebar'})
+    if (isFirefoxLike) {
+      firefoxBrowser().runtime.sendMessage({type: 'openSidebar'})
     } else {
       chrome.runtime.sendMessage({type: 'openSidebar'})
     }

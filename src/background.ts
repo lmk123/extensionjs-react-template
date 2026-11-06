@@ -1,18 +1,11 @@
-import type Browser from 'webextension-polyfill'
+import {firefoxBrowser, isFirefoxLike} from './lib/browser'
 
 console.log(
   '[From the background context] Hello from the background worker/script!'
 )
 
-const isFirefoxLike =
-  import.meta.env.EXTENSION_PUBLIC_BROWSER === 'firefox' ||
-  import.meta.env.EXTENSION_PUBLIC_BROWSER === 'gecko-based'
-
 if (isFirefoxLike) {
-  // @types/chrome (>= 0.3) declares the global `browser` as `typeof chrome`,
-  // which shadows Extension.js's webextension-polyfill typing and has no
-  // Firefox-only APIs such as `sidebarAction`. Re-type it explicitly here.
-  const firefox = browser as unknown as Browser.Browser
+  const firefox = firefoxBrowser()
 
   firefox.action.onClicked.addListener(() => {
     firefox.sidebarAction.open()

@@ -8,7 +8,7 @@ An opinionated React browser-extension starter built on **Extension.js** (the `e
 
 ## Commands
 
-Package manager is **pnpm** (`pnpm@12.18.0`). Append CLI flags directly after the script name, e.g. `pnpm run dev --browser=firefox`. Do **not** insert `--`: pnpm (11+) forwards it literally, so Extension.js reads `--browser=firefox` as the project path and fails with "Manifest file not found".
+Package manager is **pnpm** (`pnpm@12.18.0`). Append CLI flags directly after the script name, e.g. `pnpm run dev --browser=firefox`. Do **not** insert `--`: pnpm forwards it literally (verified on pnpm 10, 11 and 12), so Extension.js reads `--browser=firefox` as the project path and fails with "Manifest file not found".
 
 ```bash
 pnpm run dev            # dev server + HMR, Chromium by default (--browser=firefox|edge)
@@ -48,7 +48,7 @@ The "open sidebar" flow crosses contexts: the content-script button (`ContentApp
 - `chromium:` / `firefox:` prefixes select keys per target (e.g. `chromium:side_panel` vs `firefox:sidebar_action`, `chromium:service_worker` vs `firefox:scripts`).
 - `manifest_version: 3` for **both** Chromium and Firefox (Firefox 109+ supports MV3). Firefox-only runtime differences (event-page `background.scripts`, `sidebar_action`) are still expressed with `firefox:` prefixes — not a lower manifest version.
 
-Because of this, the same feature often needs **two manifest entries and two runtime code paths**. At runtime, branch on `import.meta.env.EXTENSION_PUBLIC_BROWSER` (values include `firefox`, `gecko-based`) — see `background.ts` and `ContentApp.tsx`. Chromium code uses `chrome.sidePanel`; Firefox uses `browser.sidebarAction`.
+Because of this, the same feature often needs **two manifest entries and two runtime code paths**. At runtime, branch on `isFirefoxLike` from `src/lib/browser.ts` (covers `EXTENSION_PUBLIC_BROWSER` values `firefox` and `gecko-based`) — see `background.ts` and `ContentApp.tsx`. Chromium code uses `chrome.sidePanel`; Firefox code calls `firefoxBrowser()` from the same module (e.g. `firefoxBrowser().sidebarAction`). Don't use the bare `browser` global for Firefox-only APIs: `@types/chrome` (>= 0.3) re-types it as `typeof chrome`, and `firefoxBrowser()` is the one place that casts it back to the webextension-polyfill type.
 
 Manifest entry points reference **TypeScript files directly** (`background.ts`, `content/scripts.tsx`) — Extension.js transpiles them.
 

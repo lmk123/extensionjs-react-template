@@ -86,8 +86,8 @@ import {Button} from '@/components/ui/button'
 
 ```bash
 pnpm run dev           # Chromium（默认）
-pnpm run dev -- --browser=firefox
-pnpm run dev -- --browser=edge
+pnpm run dev --browser=firefox
+pnpm run dev --browser=edge
 ```
 
 ### build
